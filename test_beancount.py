@@ -29,7 +29,6 @@ tr1 = data.Transaction(
 
 units = data.Amount(Decimal("-230.00"), "CNY")
 posting1 = data.Posting("Assets:A中国银行:A借记卡888", units, None, None, None, None)
-
 tr1.postings.append(posting1)
 
 posting2 = data.create_simple_posting(tr1, "Expenses:E食物:E咖啡", "230.00", "CNY")
@@ -41,9 +40,12 @@ assert isinstance(posting1, data.Posting)
 assert isinstance(posting2, data.Posting)
 assert tr1.postings[0] is posting1
 assert tr1.postings[1] is posting2
-
-print(tr1.meta["filename"])
+bc_filename = tr1.meta["filename"]
+print(bc_filename)
 
 ep = EntryPrinter()
 entry_string = ep(tr1)
 print(entry_string)
+# 保存文件
+with open(bc_filename, "w", encoding="utf-8") as f:
+    f.write(entry_string)
