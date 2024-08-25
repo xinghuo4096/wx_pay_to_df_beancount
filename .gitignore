@@ -189,3 +189,4 @@ pip-selfcheck.json
 
 #项目排除文件
 test.beancount
+secret/*

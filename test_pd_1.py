@@ -3,24 +3,6 @@ import pandas as pd
 
 if __name__ == "__main__":
 
-    # 假设我们有包含金额和货币符号的字符串
-    data = [
-        "￥100.00",
-        "$2.50",
-        "€3.15",
-        "£4.16",
-        "无效金额",
-    ]
-
-    # 创建DataFrame并应用函数
-    df = pd.DataFrame({"amount_data": data})
-    df[["amount", "currency"]] = (
-        df["amount_data"].apply(parse_amount_with_currency).apply(pd.Series)
-    )
-
-    # 显示结果
-    print(df[["amount", "currency"]])
-
     sa = pd.Series([1, 2, 3], index=list(["aaa", "bbb", "ccc"]))
     print(sa)
 
