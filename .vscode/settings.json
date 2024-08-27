@@ -1,3 +1,5 @@
 {
-  "Codegeex.CommitMessageStyle": "Default"
+  "Codegeex.CommitMessageStyle": "ConventionalCommits",
+  "Codegeex.CompletionDelay": 0.2,
+  "Codegeex.GenerationPreference": "block"
 }

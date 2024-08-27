@@ -1,4 +1,5 @@
 import enum
+import json
 
 
 class AccountType(enum.Enum):
@@ -20,55 +21,46 @@ class AccountType(enum.Enum):
     Expenses = "Expenses"
 
 
-def get_account_by_keyword(keyword):
-    '''
-    # TODO函数根据keyword名称account，可用ai辅助判断
-    # ai prompt：
-    #  - Role: 消费记录关键字提取专家
-    # - Background: 用户需要从多条消费记录中提取关键字，并根据这些关键字将记录分类到相应的大类中，以便于快速检索和记账管理。
-    # - Profile: 你是一位专业的消费记录分析和关键字提取专家，能够准确识别和提取消费记录中的关键信息，并根据这些信息进行有效的分类。
-    # - Skills: 你具备高级文本分析、关键词提取、数据分类和逻辑判断的能力，能够确保关键字的精炼性、代表性和区分度。
-    # - Goals: 从用户给定的消费记录中提取精炼的关键字，形成便于检索和判断的分类体系，并确保每个大类都有其对应的关键字集合。
-    # - Constrains: 提取的关键字应简洁、具有高度的代表性和区分度，避免重复或过于具体的名称，同时应根据实际情况和数据反馈进行调整。
-    # - OutputFormat: 输出应为“大类：[关键字数组]”的格式，清晰展示每个大类的关键字集合及其对应的消费记录示例。
-    # - Workflow:
-    #   1. 接收用户给定的多条消费记录。
-    #   2. 对每条记录进行详细分析，提取关键信息。
-    #   3. 根据提取的关键信息，形成关键字集合。
-    #   4. 将关键字集合分类到相应的大类中。
-    #   5. 输出每个大类的关键字集合和对应的消费记录示例。
-    # - Examples:
-    #   - 例子1：大类：超市，关键字：["超市", "MART", "GROCERY"], 示例：["惠友超市HUIYOUMARTHY", "文利百货超市"]
-    #   - 例子2：大类：餐饮，关键字：["拉面", "面馆", "兰州拉面"], 示例：["中国兰州拉面店"]
-    #   - 例子3：大类：服饰，关键字：["服饰", "男装", "女装"], 示例：["时尚服饰店", "经典男装"]
-    # - Initialization: 在第一次对话中，请直接输出以下：欢迎您使用消费记录关键字提取服务。请提供您的消费记录，我将帮助您从中提取关键字并进行有效分类。现在，请开始输入您的消费记录。    """
-    # 根据关键字，返回过账记录的账本。
+def ai_get_account_by_keyword(keyword):
+    ## TODO：给定自己定义好的多个账户让ai选择
+    # ，比如50个账户，问ai，给出最合适记账的账户，比如：易云音乐支付， 问ai后，ai从给出选择列表里选，给出最合适的账户'Entertainment娱乐:E数字'。
+
+    pass
+
+
+def get_account_by_keyword(
+    keyword, default_is_None: bool = True, default="默认账本:{keyword}"
+):
+    """
+    根据关键字，返回过账记录的账本。
     :param keyword: 关键字
     :return: 账本
-    '''
-    categories_keywords = [
+    """
+    # 从文件读取JSON数据
+    with open(
+        "secret/data_with_descriptions_and_ledgers.json", "r", encoding="utf-8"
+    ) as f:
+        loaded_data = json.load(f)
+
+    assert loaded_data is not None, "数据为空"
+
+    # 给出keywords'易云音乐支付',找出推荐账本
+    recommended_ledger = next(
         (
-            "餐饮",
-            ["面食店", "拉面", "烧饼", "餐饮", "餐厅", "西饼", "烘焙"],
+            loaded_data[i]["recommended_ledger"]
+            for i in range(len(loaded_data))
+            for key in loaded_data[i]["keywords"]
+            if key in keyword
         ),
-        (
-            "超市",
-            ["超市", "MART", "GROCERY"],
-        ),
-        ("个人护理", ["快剪", "美发", "护理"]),
-        (
-            "食品",
-            ["零食", "豆腐", "大饼", "肉铺"],
-        ),
-        ("交通", ["公交", "交通"]),
-        ("医疗", ["医院", "医疗"]),
-        ("文化用品", ["文化用品", "办公用品"]),
-        ("网络平台", ["拼多多", "京东", "淘宝", "美团,电商"]),
-    ]
-    for category, keywords in categories_keywords:
-        if keyword in keywords:
-            return category
-    return f"未找到合适账本记录:{keyword}"
+        None,
+    )
+    if recommended_ledger:
+        return recommended_ledger
+    else:
+        if default_is_None:
+            return None
+        else:
+            return default.format(keyword=keyword)
 
 
 def get_narration_by_keyword(keyword):

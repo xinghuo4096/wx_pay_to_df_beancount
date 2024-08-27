@@ -1,0 +1,170 @@
+[
+    {
+        "category": "餐饮",
+        "keywords": [
+            "面食店",
+            "拉面",
+            "烧饼",
+            "餐饮",
+            "餐厅",
+            "西饼",
+            "烘焙"
+        ],
+        "description": "与食物相关的店铺和服务",
+        "recommended_ledger": "Food食物:E餐饮"
+    },
+    {
+        "category": "超市",
+        "keywords": [
+            "超市",
+            "MART",
+            "GROCERY"
+        ],
+        "description": "销售日常用品的商店",
+        "recommended_ledger": "Other其他:E超市"
+    },
+    {
+        "category": "个人护理",
+        "keywords": [
+            "快剪",
+            "美发",
+            "护理"
+        ],
+        "description": "提供个人清洁和美容服务的店铺",
+        "recommended_ledger": "Personal个人:E护理"
+    },
+    {
+        "category": "食品",
+        "keywords": [
+            "零食",
+            "豆腐",
+            "大饼",
+            "肉铺"
+        ],
+        "description": "与食品相关的产品和服务",
+        "recommended_ledger": "Food食物:E食品"
+    },
+    {
+        "category": "交通",
+        "keywords": [
+            "公交",
+            "交通",
+            "地铁",
+            "出租车",
+            "火车",
+            "飞机",
+            "长途汽车",
+            "长途车",
+            "长途",
+            "出租车",
+            "滴滴",
+            "快车",
+            "顺风车",
+            "网约车",
+            "共享单车"
+        ],
+        "description": "与出行相关的服务和设施",
+        "recommended_ledger": "Transport交通:E交通"
+    },
+    {
+        "category": "医疗",
+        "keywords": [
+            "医院",
+            "医疗",
+            "诊所",
+            "药店",
+            "药房"
+        ],
+        "description": "提供医疗服务的机构",
+        "recommended_ledger": "Health健康:E医疗"
+    },
+    {
+        "category": "文化用品",
+        "keywords": [
+            "文化用品",
+            "办公用品"
+        ],
+        "description": "销售书籍、文具等文化用品的商店",
+        "recommended_ledger": "Culture文化:E用品"
+    },
+    {
+        "category": "外卖",
+        "keywords": [
+            "外卖",
+            "送餐",
+            "美团",
+            "饿了么"
+        ],
+        "description": "提供外卖服务的平台",
+        "recommended_ledger": "Food食物:E外卖"
+    },
+    {
+        "category": "文体娱乐",
+        "keywords": [
+            "电影院",
+            "KTV",
+            "游戏厅",
+            "娱乐",
+            "健身"
+        ],
+        "description": "提供娱乐和休闲活动的场所",
+        "recommended_ledger": "Entertainment娱乐:E文体"
+    },
+    {
+        "category": "教育培训",
+        "keywords": [
+            "培训",
+            "教育",
+            "辅导",
+            "学习",
+            "学校"
+        ],
+        "description": "提供教育和培训服务的机构",
+        "recommended_ledger": "Education教育:E培训"
+    },
+    {
+        "category": "数字娱乐",
+        "keywords": [
+            "云音乐",
+            "QQ音乐",
+            "游戏",
+            "直播",
+            "抖音",
+            "快手",
+            "小红书",
+            "微博",
+            "B站",
+            "哔哩哔哩",
+            "抖音",
+            "快手",
+            "小红书",
+            "微博",
+            "B站",
+            "哔哩哔哩"
+        ],
+        "description": "提供数字娱乐服务的平台",
+        "recommended_ledger": "Entertainment娱乐:E数字"
+    },
+    {
+        "category": "生活物品电商",
+        "keywords": [
+            "京东",
+            "拼多多",
+            "淘宝",
+            "美团"
+        ],
+        "description": "提供生活物品的在线购物平台",
+        "recommended_ledger": "Online在线:E电商"
+    },
+    {
+        "category": "零钱通",
+        "keywords": [
+            "零钱通",
+            "余额宝",
+            "支付宝",
+            "微信"
+        ],
+        "description": "微信支付的零钱通",
+        "recommended_ledger": "WeChat:E零钱通"
+    }
+]

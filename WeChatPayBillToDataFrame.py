@@ -354,7 +354,7 @@ class WeChatPayBillToDataFrame:
                 case _:
                     raise ValueError("收/支字段有异常值")
 
-            if posting1_account and posting1_account:
+            if posting1_account and posting2_account:
                 if counterparty == "/":
                     counterparty = "零钱"
                 wx_pay_df_beancount_record = {
@@ -403,8 +403,7 @@ class WeChatPayBillToDataFrame:
         self.beancount_df.to_csv(
             "secret\\new_wxdf1.csv", index=True, encoding="utf-8-sig"
         )
-
-        if self.unprocessed_df:
+        if self.unprocessed_df is not None and not self.beancount_df.empty:
             self.unprocessed_df.to_html("secret\\unprocessed_wxdf1.html", index=True)
             self.unprocessed_df.to_csv(
                 "secret\\new_unprocessed_wxdf1.csv", index=True, encoding="utf-8-sig"
