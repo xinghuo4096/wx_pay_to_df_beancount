@@ -432,24 +432,31 @@ class WeChatPayBillToDataFrame:
         return wxdf, unprocessed_wxdf
 
     # 存储df到json和html文件
-    def save_to_file(self):
+    # TODO 直接生成beancount文件
+    # TODO 写一个2.6.4的https://beancount.github.io/docs/importing_external_data.html#writing-an-importer
+    def save_to_file(
+        self,
+        json_path="secret\\wx1.json",
+        html_path="secret\\wx1.html",
+        csv_path="secret\\new_wx1.csv",
+        beancount_html_path="secret\\wxdf1.html",
+        beancount_csv_path="secret\\new_wxdf1.csv",
+        unprocessed_html_path="secret\\unprocessed_wxdf1.html",
+        unprocessed_csv_path="secret\\new_unprocessed_wxdf1.csv",
+    ):
         """
         将df保存到json和html文件
         """
-        self.df.to_json(
-            "secret\\wx1.json", orient="records", force_ascii=False, lines=True
-        )
-        self.df.to_html("secret\\wx1.html", index=True)
-        self.df.to_csv("secret\\new_wx1.csv", index=True, encoding="utf-8-sig")
+        self.df.to_json(json_path, orient="records", force_ascii=False, lines=True)
+        self.df.to_html(html_path, index=True)
+        self.df.to_csv(csv_path, index=True, encoding="utf-8-sig")
 
-        self.beancount_df.to_html("secret\\wxdf1.html", index=True)
-        self.beancount_df.to_csv(
-            "secret\\new_wxdf1.csv", index=True, encoding="utf-8-sig"
-        )
+        self.beancount_df.to_html(beancount_html_path, index=True)
+        self.beancount_df.to_csv(beancount_csv_path, index=True, encoding="utf-8-sig")
         if self.unprocessed_df is not None and not self.beancount_df.empty:
-            self.unprocessed_df.to_html("secret\\unprocessed_wxdf1.html", index=True)
+            self.unprocessed_df.to_html(unprocessed_html_path, index=True)
             self.unprocessed_df.to_csv(
-                "secret\\new_unprocessed_wxdf1.csv", index=True, encoding="utf-8-sig"
+                unprocessed_csv_path, index=True, encoding="utf-8-sig"
             )
 
     def check_data(self):

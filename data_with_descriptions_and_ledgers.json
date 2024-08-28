@@ -4,11 +4,42 @@
         "keywords": [
             "面食店",
             "拉面",
+            "牛肉面",
+            "烤馕",
             "烧饼",
+            "肉夹馍",
+            "羊肉泡馍",
+            "炒饭",
+            "炒面",
+            "炒粉",
+            "河粉",
+            "米粉",
             "餐饮",
             "餐厅",
             "西饼",
-            "烘焙"
+            "烘焙",
+            "麻辣烫",
+            "火锅",
+            "烧烤",
+            "炸鸡",
+            "披萨",
+            "汉堡",
+            "寿司",
+            "烤肉",
+            "烤鸭",
+            "烤鱼",
+            "快餐",
+            "炸串",
+            "蜜雪冰城",
+            "麦当劳",
+            "肯德基",
+            "必胜客",
+            "海底捞",
+            "星巴克",
+            "呷哺呷哺",
+            "咖啡厅",
+            "茶馆",
+            "甜品店"
         ],
         "description": "与食物相关的店铺和服务",
         "recommended_ledger": "Food食物:E餐饮"
@@ -18,20 +49,25 @@
         "keywords": [
             "超市",
             "MART",
-            "GROCERY"
+            "GROCERY",
+            "便利店",
+            "银座商城"
         ],
         "description": "销售日常用品的商店",
-        "recommended_ledger": "Other其他:E超市"
+        "recommended_ledger": "生活物品:E超市"
     },
     {
         "category": "个人护理",
         "keywords": [
             "快剪",
             "美发",
-            "护理"
+            "护理",
+            "干洗",
+            "洗鞋",
+            "修鞋"
         ],
         "description": "提供个人清洁和美容服务的店铺",
-        "recommended_ledger": "Personal个人:E护理"
+        "recommended_ledger": "Live日常生活:Personal个人:E护理"
     },
     {
         "category": "食品",
@@ -39,7 +75,11 @@
             "零食",
             "豆腐",
             "大饼",
-            "肉铺"
+            "肉铺",
+            "水果",
+            "蔬菜",
+            "牛羊肉",
+            "羊肉"
         ],
         "description": "与食品相关的产品和服务",
         "recommended_ledger": "Food食物:E食品"
@@ -61,7 +101,10 @@
             "快车",
             "顺风车",
             "网约车",
-            "共享单车"
+            "共享单车",
+            "中铁网络",
+            "运输集团",
+            "售票员"
         ],
         "description": "与出行相关的服务和设施",
         "recommended_ledger": "Transport交通:E交通"
@@ -73,7 +116,9 @@
             "医疗",
             "诊所",
             "药店",
-            "药房"
+            "药房",
+            "医药连锁",
+            "妇幼保健院"
         ],
         "description": "提供医疗服务的机构",
         "recommended_ledger": "Health健康:E医疗"
@@ -140,7 +185,9 @@
             "小红书",
             "微博",
             "B站",
-            "哔哩哔哩"
+            "哔哩哔哩",
+            "腾讯云费用",
+            "百度平台商家"
         ],
         "description": "提供数字娱乐服务的平台",
         "recommended_ledger": "Entertainment娱乐:E数字"
@@ -154,17 +201,85 @@
             "美团"
         ],
         "description": "提供生活物品的在线购物平台",
-        "recommended_ledger": "Online在线:E电商"
+        "recommended_ledger": "生活物品:E电商"
     },
     {
         "category": "零钱通",
         "keywords": [
             "零钱通",
+            "零钱",
             "余额宝",
             "支付宝",
             "微信"
         ],
         "description": "微信支付的零钱通",
         "recommended_ledger": "WeChat:E零钱通"
+    },
+    {
+        "category": "8888银行卡",
+        "keywords": [
+            "工商银行储蓄卡(8888)"
+        ],
+        "description": "工商银行储蓄卡(8888)",
+        "recommended_ledger": "Bank银行:ICBC工商银行:E8888银行卡"
+    },
+    {
+        "category": "通信",
+        "keywords": [
+            "中国移动",
+            "中国联通",
+            "中国电信",
+            "手机充值",
+            "话费",
+            "流量",
+            "宽带",
+            "电信",
+            "联通",
+            "移动"
+        ],
+        "description": "与通信相关的服务和设施",
+        "recommended_ledger": "Live日常生活:E通信"
+    },
+    {
+        "category": "物业房租",
+        "keywords": [
+            "物业费",
+            "房租",
+            "物业"
+        ],
+        "description": "与物业和房租相关的费用",
+        "recommended_ledger": "Live日常生活:Property物业房租"
+    },
+    {
+        "category": "旅游住店",
+        "keywords": [
+            "首旅如家酒店",
+            "酒店",
+            "民宿",
+            "旅游",
+            "住宿"
+        ],
+        "description": "与旅游和住宿相关的费用",
+        "recommended_ledger": "Travel旅游:E住店"
+    },
+    {
+        "category": "保险",
+        "keywords": [
+            "众安健康",
+            "保险test1",
+            "税务总局"
+        ],
+        "description": "提供保险服务的机构",
+        "recommended_ledger": "Health健康:E保险"
+    },
+       {
+        "category": "杂七杂八的消费",
+        "keywords": [
+            "杂七杂八的消费test1",
+            "杂七杂八的消费test2",
+            "杂七杂八的消费test3"
+        ],
+        "description": "其他未分类的消费",
+        "recommended_ledger": "Live日常生活:E杂七杂八"
     }
 ]

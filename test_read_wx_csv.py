@@ -3,9 +3,11 @@ from WeChatPayBillToDataFrame import WeChatPayBillToDataFrame
 
 if __name__ == "__main__":
 
+    # AI处理后的文件，目前必须放到secret/data_with_descriptions_and_ledgers.json
+
     # 指定CSV文件路径
-    file_path = "secret"
     # 把指定目录的以'微信'开头的.cvs文件名,合并目录名称后放入列表
+    file_path = "secret"
 
     wx_csv = WeChatPayBillToDataFrame(file_path)
 
@@ -14,7 +16,15 @@ if __name__ == "__main__":
 
     wx_csv.check_data()
 
-    wx_csv.save_to_file()
+    wx_csv.save_to_file(
+        json_path="secret\\wx_pay.json",
+        html_path="secret\\wx_pay.html",
+        csv_path="secret\\wx_pay.csv",
+        beancount_html_path="secret\\wx_pay.beancount.html",
+        beancount_csv_path="secret\\wx_pay.beancount.csv",
+        unprocessed_html_path="secret\\wx_pay.unprocessed.html",
+        unprocessed_csv_path="secret\\wx_pay.unprocessed.csv",
+    )
 
     print(wx_csv.beancount_df.head())
     print(wx_csv.beancount_df.tail())
