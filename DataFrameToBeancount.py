@@ -44,7 +44,7 @@ def get_account_by_keyword(
 
     assert loaded_data is not None, "数据为空"
 
-    # 给出keywords'易云音乐支付',找出推荐账本
+    # 给出keywords，如：'网易云音乐支付',找出推荐账本
     recommended_ledger = next(
         (
             loaded_data[i]["recommended_ledger"]

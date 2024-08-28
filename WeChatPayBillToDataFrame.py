@@ -40,6 +40,32 @@ class WeChatPayBillToDataFrame:
         self.beancount_df = None
         self.unprocessed_df = None
 
+        self.default_account = f"{AccountType.Expenses}:Live日常生活:小额默认账本"
+        """
+        默认账本，用于类型是支出时，找不到账本的情况下
+        """
+
+        self.default_account_max_amount = 100.00
+        """
+        定义交易时支出,找不到账本情况下,低于最大的金额,则使用默认账本
+        """
+
+    def process(self):
+        """
+        处理微信支付账单，生成DataFrame
+        """
+        # 读取所有微信支付账单文件
+        for file_path in self.file_list:
+            # 读取微信支付账单文件
+            df = pd.read_csv(file_path, skiprows=15, header=0, dtype=self.dtypes)
+            # 将金额列转换为浮点数
+            df["金额(元)"] = df["金额(元)"].apply(parse_amount_with_currency)
+            # 将交易时间列转换为datetime类型
+        self.max_amount = 0
+        """
+        最大的金额，用于计算最大金额的百分比
+        """
+
     def check_wx_csv_16_17(file_path: str) -> bool:
         """
         检查文件是否为微信支付账单</br>
@@ -130,6 +156,7 @@ class WeChatPayBillToDataFrame:
             else:
                 wxdf = pd.concat([wxdf, df], ignore_index=True)
                 wxdf.drop_duplicates(inplace=True)
+                wxdf.reset_index(drop=True, inplace=True)
         self.df = wxdf
         return wxdf
 
@@ -227,6 +254,8 @@ class WeChatPayBillToDataFrame:
                 pay_account = "零钱"
             if counterparty == "/":
                 counterparty = "零钱"
+            if product == "/":
+                product = "零钱"
 
             match income_or_expense:
                 case "支出":
@@ -240,6 +269,12 @@ class WeChatPayBillToDataFrame:
                             posting2_account = get_account_by_keyword(counterparty)
                             posting2_account_amount = posting2_account_amount
 
+                            if (
+                                posting2_account is None
+                                and posting2_account_amount
+                                < self.default_account_max_amount
+                            ):
+                                posting2_account = self.default_account
                             flag = "*"
 
                             # 生成过账备注信息
@@ -292,6 +327,12 @@ class WeChatPayBillToDataFrame:
                             posting2_account_type = AccountType.Income.value
                             posting2_account = get_account_by_keyword(counterparty)
                             posting2_account_amount = -1 * posting2_account_amount
+
+                            if (
+                                posting2_account == None
+                                and posting1_account_amount < 10
+                            ):
+                                posting2_account = "小额收入:默认小额收入"
 
                             flag = "*"
 
@@ -380,9 +421,11 @@ class WeChatPayBillToDataFrame:
 
         wxdf = pd.concat(wxdf_list, ignore_index=True)
         wxdf = wxdf.reset_index(drop=True)
+
         unprocessed_wxdf = None
         if len(unprocessed_wxdf_list) > 0:
             unprocessed_wxdf = pd.concat(unprocessed_wxdf_list, ignore_index=True)
+
         self.beancount_df = wxdf
         self.unprocessed_df = unprocessed_wxdf
         print("处理完成")
