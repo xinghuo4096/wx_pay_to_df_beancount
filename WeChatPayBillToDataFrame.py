@@ -310,7 +310,7 @@ class WeChatPayBillToDataFrame:
                             posting1_account = get_account_by_keyword(pay_account)
                             posting1_account_amount = posting1_account_amount
 
-                            posting2_account_type = AccountType.Income.value
+                            posting2_account_type = AccountType.Expenses.value
                             posting2_account = get_account_by_keyword(counterparty)
                             posting2_account_amount = -1 * posting2_account_amount
 
