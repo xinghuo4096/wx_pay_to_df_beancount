@@ -8,8 +8,14 @@ from DataFrameToBeancount import AccountType
 class WeChatPayBillToDataFrame:
     """
     微信支付账单转DataFrame
+    default_account = f"{AccountType.Expenses.value}:Live日常生活:小额默认账本"
 
     """
+    DEFAULT_ACCOUNT_EXPENSES = "Live日常生活:小额支出默认账本"
+    """
+        默认账本，用于类型是支出时，找不到账本的情况下
+    """
+    DEFAULT_ACCOUNT_INCOME = '"小额收入:默认账本'
 
     # 列的数据类型，根据列名进行合理的假设
 
@@ -39,11 +45,6 @@ class WeChatPayBillToDataFrame:
         self.df = None
         self.beancount_df = None
         self.unprocessed_df = None
-
-        self.default_account = f"{AccountType.Expenses}:Live日常生活:小额默认账本"
-        """
-        默认账本，用于类型是支出时，找不到账本的情况下
-        """
 
         self.default_account_max_amount = 100.00
         """
@@ -274,7 +275,7 @@ class WeChatPayBillToDataFrame:
                                 and posting2_account_amount
                                 < self.default_account_max_amount
                             ):
-                                posting2_account = self.default_account
+                                posting2_account =WeChatPayBillToDataFrame.DEFAULT_ACCOUNT_EXPENSES
                             flag = "*"
 
                             # 生成过账备注信息
@@ -332,7 +333,9 @@ class WeChatPayBillToDataFrame:
                                 posting2_account == None
                                 and posting1_account_amount < 10
                             ):
-                                posting2_account = "小额收入:默认小额收入"
+                                posting2_account = (
+                                    WeChatPayBillToDataFrame.DEFAULT_ACCOUNT_INCOME
+                                )
 
                             flag = "*"
 

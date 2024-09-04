@@ -7,9 +7,8 @@ from WeChatPayBillToDataFrame import WeChatPayBillToDataFrame
 
 def wechat_pay_to_beancount(
     wx_csv: WeChatPayBillToDataFrame,
-    beancount_path="secret/wechat_pay_test.beancount",
-    beancount_account_path="secret/wechat_pay_test_account.beancount",
 ):
+    beancount_path = ("secret/wechat_pay_test.beancount",)
     if wx_csv and not wx_csv.beancount_df.empty:
 
         entry = data.new_metadata(beancount_path, 2024)
@@ -51,22 +50,26 @@ def wechat_pay_to_beancount(
 
                 all_accounts.setdefault(account1, account1)
                 all_accounts.setdefault(account2, account2)
+        return all_accounts, all_transactions
+    else:
+        return None, None
 
-        # TODO 加入ai生成的账本说明
 
-        ep = EntryPrinter()
-        entry_string = "\n".join([ep(t1) for t1 in all_transactions])
-        with open(beancount_path, "w", encoding="utf-8") as f:
-            f.write(entry_string)
+def save_beancount(
+    beancount_path, beancount_account_path, all_transactions, all_accounts
+):
+    ep = EntryPrinter()
+    entry_string = "\n".join([ep(t1) for t1 in all_transactions])
+    with open(beancount_path, "w", encoding="utf-8") as f:
+        f.write(entry_string)
 
-        # all_accounts按键排序
-        all_accounts = sorted(all_accounts.values())
-        account_str = "\n".join(
-            [f"1949-10-01 open  {account}" for account in all_accounts]
-        )
+    # all_accounts按键排序
+    # TODO 加入ai生成的每个账本的用途说明
+    all_accounts = sorted(all_accounts.values())
+    account_str = "\n".join([f"1949-10-01 open  {account}" for account in all_accounts])
 
-        with open(beancount_account_path, "w", encoding="utf-8") as f:
-            f.write(account_str)
+    with open(beancount_account_path, "w", encoding="utf-8") as f:
+        f.write(account_str)
 
 
 if __name__ == "__main__":
@@ -84,7 +87,17 @@ if __name__ == "__main__":
 
     wx_csv.check_data()
 
-    wechat_pay_to_beancount(wx_csv, "secret/wechat_pay_test.beancount")
+    beancount_path = "secret/wechat_pay_test.beancount"
+    beancount_account_path = "secret/wechat_pay_test.account.beancount"
+
+    all_accounts, all_transactions = wechat_pay_to_beancount(wx_csv)
+
+    assert all_accounts, "没有推测出账户account"
+    assert all_transactions, "没有交易过账"
+
+    save_beancount(
+        beancount_path, beancount_account_path, all_transactions, all_accounts
+    )
 
     wx_csv.save_to_file(
         json_path="secret\\wx_pay.json",
