@@ -15,7 +15,7 @@ class WeChatPayBillToDataFrame:
     """
         默认账本，用于类型是支出时，找不到账本的情况下
     """
-    DEFAULT_ACCOUNT_INCOME = '"小额收入:默认账本'
+    DEFAULT_ACCOUNT_INCOME = "小额收入:默认账本"
 
     # 列的数据类型，根据列名进行合理的假设
 
@@ -275,7 +275,9 @@ class WeChatPayBillToDataFrame:
                                 and posting2_account_amount
                                 < self.default_account_max_amount
                             ):
-                                posting2_account =WeChatPayBillToDataFrame.DEFAULT_ACCOUNT_EXPENSES
+                                posting2_account = (
+                                    WeChatPayBillToDataFrame.DEFAULT_ACCOUNT_EXPENSES
+                                )
                             flag = "*"
 
                             # 生成过账备注信息

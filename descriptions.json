@@ -1,0 +1,82 @@
+{
+  "餐饮": {
+    "description": "与食物相关的店铺和服务",
+    "recommended_ledger": "Food食物:E餐饮"
+  },
+  "超市": {
+    "description": "销售日常用品的商店",
+    "recommended_ledger": "生活物品:E超市"
+  },
+  "个人护理": {
+    "description": "提供个人清洁和美容服务的店铺",
+    "recommended_ledger": "Live日常生活:Personal个人:E护理"
+  },
+  "食品": {
+    "description": "与食品相关的产品和服务",
+    "recommended_ledger": "Food食物:E食品"
+  },
+  "交通": {
+    "description": "与出行相关的服务和设施",
+    "recommended_ledger": "Transport交通:E交通"
+  },
+  "医疗": {
+    "description": "提供医疗服务的机构",
+    "recommended_ledger": "Health健康:E医疗"
+  },
+  "保险": {
+    "description": "提供保险服务的机构",
+    "recommended_ledger": "Health健康:E保险"
+  },
+  "文化用品": {
+    "description": "销售书籍、文具等文化用品的商店",
+    "recommended_ledger": "Culture文化:E用品"
+  },
+  "网络平台": {
+    "description": "提供在线购物和服务的网站和应用程序",
+    "recommended_ledger": "Online在线:E平台"
+  },
+  "外卖": {
+    "description": "提供外卖服务的平台",
+    "recommended_ledger": "Food食物:E外卖"
+  },
+  "文体娱乐": {
+    "description": "提供娱乐和休闲活动的场所",
+    "recommended_ledger": "Entertainment娱乐:E文体"
+  },
+  "教育培训": {
+    "description": "提供教育和培训服务的机构",
+    "recommended_ledger": "Education教育:E培训"
+  },
+  "数字娱乐": {
+    "description": "提供数字娱乐服务的平台",
+    "recommended_ledger": "Entertainment娱乐:E数字"
+  },
+  "生活物品电商": {
+    "description": "提供生活物品的在线购物平台",
+    "recommended_ledger": "生活物品:E电商"
+  },
+  "零钱通": {
+    "description": "微信支付的零钱通",
+    "recommended_ledger": "WeChat:E零钱通"
+  },
+  "0808银行卡": {
+    "description": "工商银行储蓄卡(0808)",
+    "recommended_ledger": "Bank银行:ICBC工商银行:E0808银行卡"
+  },
+  "通信": {
+    "description": "与通信相关的服务和设施",
+    "recommended_ledger": "Live日常生活:E通信"
+  },
+  "物业房租": {
+    "description": "与物业和房租相关的费用",
+    "recommended_ledger": "Live日常生活:Property物业房租"
+  },
+  "旅游住店": {
+    "description": "与旅游和住宿相关的费用",
+    "recommended_ledger": "Travel旅游:E住店"
+  },
+  "杂七杂八的消费": {
+    "description": "其他未分类的消费",
+    "recommended_ledger": "Live日常生活:E杂七杂八"
+  }
+}

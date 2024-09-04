@@ -216,12 +216,12 @@
         "recommended_ledger": "WeChat:E零钱通"
     },
     {
-        "category": "8888银行卡",
+        "category": "0808银行卡",
         "keywords": [
-            "工商银行储蓄卡(8888)"
+            "工商银行储蓄卡(0808"
         ],
-        "description": "工商银行储蓄卡(8888)",
-        "recommended_ledger": "Bank银行:ICBC工商银行:E8888银行卡"
+        "description": "工商银行储蓄卡(0808)",
+        "recommended_ledger": "Bank银行:ICBC工商银行:E0808银行卡"
     },
     {
         "category": "通信",
@@ -245,7 +245,9 @@
         "keywords": [
             "物业费",
             "房租",
-            "物业"
+            "物业",
+            "testw111",
+            "testw"
         ],
         "description": "与物业和房租相关的费用",
         "recommended_ledger": "Live日常生活:Property物业房租"
@@ -266,18 +268,18 @@
         "category": "保险",
         "keywords": [
             "众安健康",
-            "保险test1",
+            "testb111",
             "税务总局"
         ],
         "description": "提供保险服务的机构",
         "recommended_ledger": "Health健康:E保险"
     },
-       {
+    {
         "category": "杂七杂八的消费",
         "keywords": [
-            "杂七杂八的消费test1",
-            "杂七杂八的消费test2",
-            "杂七杂八的消费test3"
+            "test1",
+            "test2",
+            "test3"
         ],
         "description": "其他未分类的消费",
         "recommended_ledger": "Live日常生活:E杂七杂八"
