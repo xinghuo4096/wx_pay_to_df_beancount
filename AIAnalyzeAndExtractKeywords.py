@@ -43,14 +43,14 @@ class AIAnalyzeAndExtractKeywords:
 
     # 字典
     data = None
-    with open("data.json", "r", encoding="utf-8") as file:
+    with open("secret/data.json", "r", encoding="utf-8") as file:
         data = json.load(file)
 
     assert data, "没有加载json"
 
     descriptions = None
 
-    with open("descriptions.json", "r", encoding="utf-8") as file:
+    with open("secret/descriptions.json", "r", encoding="utf-8") as file:
         descriptions = json.load(file)
 
     assert descriptions, "没有加载json"
@@ -102,13 +102,13 @@ class AIAnalyzeAndExtractKeywords:
 
         # 存储到文件
         with open(
-            "data_with_descriptions_and_ledgers.json", "w", encoding="utf-8"
+            "secret/data_with_descriptions_and_ledgers.json", "w", encoding="utf-8"
         ) as f:
             f.write(json_data)
 
         # 从文件读取JSON数据
         with open(
-            "data_with_descriptions_and_ledgers.json", "r", encoding="utf-8"
+            "secret/data_with_descriptions_and_ledgers.json", "r", encoding="utf-8"
         ) as f:
             loaded_data = json.load(f)
 

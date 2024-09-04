@@ -252,12 +252,12 @@ class WeChatPayBillToDataFrame:
                 raise ValueError(f"金额字段有异常值{posting1_account_amount}")
 
             if pay_account == "/":
-                pay_account = "零钱"
+                pay_account = "微信零钱"
             if counterparty == "/":
-                counterparty = "零钱"
+                counterparty = "微信零钱"
             if product == "/":
-                product = "零钱"
-
+                product = "微信零钱"
+            # TODO 此处row['备注']如果不是'/',可用加到 narration ，加一个变量note ''或 '备注:row['备注']', narration里{note}
             match income_or_expense:
                 case "支出":
                     match trade_type:
@@ -293,7 +293,7 @@ class WeChatPayBillToDataFrame:
                             posting1_account_amount = -1 * posting1_account_amount
 
                             posting2_account_type = AccountType.Expenses.value
-                            posting2_account = get_account_by_keyword("微信红包")
+                            posting2_account = get_account_by_keyword(counterparty)
                             posting2_account_amount = posting2_account_amount
 
                             flag = "*"
@@ -351,7 +351,7 @@ class WeChatPayBillToDataFrame:
                     match trade_type:
                         case "零钱提现":
                             posting1_account_type = AccountType.Assets.value
-                            posting1_account = get_account_by_keyword("零钱")
+                            posting1_account = get_account_by_keyword("微信零钱")
                             posting1_account_amount = -1 * posting1_account_amount
 
                             posting2_account_type = AccountType.Assets.value
@@ -365,7 +365,7 @@ class WeChatPayBillToDataFrame:
                             "转入零钱通"
                         ):
                             posting1_account_type = AccountType.Assets.value
-                            posting1_account = get_account_by_keyword("零钱通")
+                            posting1_account = get_account_by_keyword("微信零钱通")
                             posting1_account_amount = posting1_account_amount
 
                             posting2_account_type = AccountType.Assets.value
@@ -379,11 +379,9 @@ class WeChatPayBillToDataFrame:
                         case lqt_out if type(lqt_out) is str and lqt_out.startswith(
                             "零钱通转出"
                         ):
-                            if counterparty == "/":
-                                counterparty = "零钱"
 
                             posting1_account_type = AccountType.Assets.value
-                            posting1_account = get_account_by_keyword("微信零钱通")
+                            posting1_account = get_account_by_keyword(pay_account)
                             posting1_account_amount = -1 * posting1_account_amount
 
                             posting2_account_type = AccountType.Assets.value
@@ -458,11 +456,15 @@ class WeChatPayBillToDataFrame:
 
         self.beancount_df.to_html(beancount_html_path, index=True)
         self.beancount_df.to_csv(beancount_csv_path, index=True, encoding="utf-8-sig")
-        if self.unprocessed_df is not None and not self.beancount_df.empty:
+        if self.unprocessed_df:
+
+            print("由未处理的内容：unprocessed_df is empty.")
             self.unprocessed_df.to_html(unprocessed_html_path, index=True)
             self.unprocessed_df.to_csv(
                 unprocessed_csv_path, index=True, encoding="utf-8-sig"
             )
+        else:
+            print("全部处理OK.unprocessed_df is empty.")
 
     def check_data(self):
         """

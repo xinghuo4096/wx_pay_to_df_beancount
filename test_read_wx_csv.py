@@ -16,6 +16,9 @@ if __name__ == "__main__":
 
     wx_csv.check_data()
 
+    print(wx_csv.beancount_df.head())
+    print(wx_csv.beancount_df.tail())
+
     wx_csv.save_to_file(
         json_path="secret\\wx_pay.json",
         html_path="secret\\wx_pay.html",
@@ -25,9 +28,6 @@ if __name__ == "__main__":
         unprocessed_html_path="secret\\wx_pay.unprocessed.html",
         unprocessed_csv_path="secret\\wx_pay.unprocessed.csv",
     )
-
-    print(wx_csv.beancount_df.head())
-    print(wx_csv.beancount_df.tail())
 
     assert wx_csv.beancount_df is not None, "beancount_df is None"
     assert wx_csv.beancount_df.head() is not None, "beancount_df.head() is None"
