@@ -1,8 +1,8 @@
 import os
 import pandas as pd
-from test_wxpay_tools import parse_amount_with_currency
-from test_wxpay_account import get_account_by_keyword
-from DataFrameToBeancount import AccountType
+
+from BeancountAccountType import AccountType
+from WeChatPayBillTools import parse_amount_with_currency, get_account_by_keyword
 
 
 class WeChatPayBillToDataFrame:
@@ -251,12 +251,10 @@ class WeChatPayBillToDataFrame:
             if posting1_account_amount <= 0 and posting2_account_amount <= 0:
                 raise ValueError(f"金额字段有异常值{posting1_account_amount}")
 
-            if pay_account == "/":
-                pay_account = "微信零钱"
-            if counterparty == "/":
-                counterparty = "微信零钱"
-            if product == "/":
-                product = "微信零钱"
+            counterparty, pay_account, product = self.clear_data1(
+                counterparty, pay_account, product
+            )
+
             # TODO 此处row['备注']如果不是'/',可用加到 narration ，加一个变量note ''或 '备注:row['备注']', narration里{note}
             match income_or_expense:
                 case "支出":
@@ -433,6 +431,23 @@ class WeChatPayBillToDataFrame:
         self.unprocessed_df = unprocessed_wxdf
         print("处理完成")
         return wxdf, unprocessed_wxdf
+
+    def clear_data1(self, counterparty, pay_account, product):
+        """
+        清洗数据,如果是"/"则替换为微信零钱，如果包含"则替换为'
+
+        """
+        if pay_account == "/":
+            pay_account = "微信零钱"
+        if counterparty == "/":
+            counterparty = "微信零钱"
+        if product == "/":
+            product = "微信零钱"
+
+        pay_account = pay_account.replace('"', "'")
+        counterparty = counterparty.replace('"', "'")
+        product = product.replace('"', "'")
+        return counterparty, pay_account, product
 
     # 存储df到json和html文件
     # TODO 直接生成beancount文件

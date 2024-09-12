@@ -1,4 +1,4 @@
-from DataFrameToBeancount import get_account_by_keyword
+from WeChatPayBillTools import get_account_by_keyword
 
 if __name__ == "__main__":
     account = get_account_by_keyword("微信零钱通支付")
