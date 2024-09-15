@@ -1,0 +1,13 @@
+{
+  "path_file": "secret",
+  "path_data_with_descriptions_and_account": "secret\\data_with_descriptions_and_ledgers.json",
+  "path_beancount": "secret/wechat_pay_test.beancount",
+  "path_beancount_account": "secret/wechat_pay_test.account.beancount",
+  "path_dataframe_json": "secret\\wx_pay.json",
+  "path_dataframe_html": "secret\\wx_pay.html",
+  "path_dataframe_csv": "secret\\wx_pay.csv",
+  "path_beancount_html": "secret\\wx_pay.beancount.html",
+  "path_beancount_csv": "secret\\wx_pay.beancount.csv",
+  "path_unprocessed_html": "secret\\wx_pay.unprocessed.html",
+  "path_unprocessed_csv": "secret\\wx_pay.unprocessed.csv"
+}

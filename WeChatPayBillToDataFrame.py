@@ -1,9 +1,8 @@
+from decimal import Decimal, InvalidOperation
 import os
 import pandas as pd
 
 from BeancountAccountType import AccountType
-from WeChatPayBillTools import parse_amount_with_currency, get_account_by_keyword
-
 
 class WeChatPayBillToDataFrame:
     """
@@ -36,7 +35,11 @@ class WeChatPayBillToDataFrame:
     微信支付账单的内部类型，供pd用
     """
 
-    def __init__(self, file_path: str = "secret"):
+    def __init__(
+        self,
+        file_path: str = "secret",
+        file_data_with_descriptions_and_account="secret\\data_with_descriptions_and_ledgers.json",
+    ):
         self.file_list = [
             os.path.join(file_path, f)
             for f in os.listdir(file_path)
@@ -50,6 +53,10 @@ class WeChatPayBillToDataFrame:
         """
         定义交易时支出,找不到账本情况下,低于最大的金额,则使用默认账本
         """
+
+        self.file_data_with_descriptions_and_account = (
+            file_data_with_descriptions_and_account
+        )
 
     def process(self):
         """
@@ -161,294 +168,6 @@ class WeChatPayBillToDataFrame:
         self.df = wxdf
         return wxdf
 
-    # 处理df，为beancount格式做准备的df格式文件
-    def prepare_df_for_beancount(self) -> tuple[pd.DataFrame, pd.DataFrame]:
-
-        wxdf_list = []
-        # 建立一个新的wxdf，空的df，
-        # colums为:
-        # date,交易日期,默认为空。
-        # time,交易时间，默认为空。
-        #
-        # flag，交易状态，默认'!'，含义是稍后检查该交易。例如：是'*'，表示已检查。其他见`beancount.core.flags`。
-        #
-        # payee，收款人，默认空。
-        # narration，交易概要。默认''。
-        # posting1，过账条目1，默认空。
-        # posting2，过账条目2，默认空。
-        #
-        # posting1_account_type，账户类型，默认空。五种Assets Liabilities Equity Income Expenses
-        # posting1_amount，金额，默认0。
-        # posting1_currency，货币类型，默认'CNY'，中国元。
-        #
-        # posting2_account_type，账户类型，默认空。五种Assets Liabilities Equity Income Expenses
-        # posting2_amount，金额，默认0。
-        # posting2_currency，货币类型，默认'CNY'，中国元。
-
-        wxdf = pd.DataFrame(
-            columns=[
-                "date",
-                "time",
-                "flag",
-                "payee",
-                "narration",
-                "posting1_account_type",
-                "posting1_account",
-                "posting1_currency",
-                "posting1_amount",
-                "posting2_account_type",
-                "posting2_account",
-                "posting2_amount",
-                "posting2_currency",
-            ]
-        )
-        # 记录未处理的wxdf内容的变量
-        unprocessed_wxdf_list = []
-        # unprocessed_wxdf和df结构相同
-        unprocessed_wxdf = pd.DataFrame(columns=self.df.columns)
-
-        print("开始处理微信支付账单df for beancount")
-        for index, row in self.df.iterrows():
-            # 交易日期
-            pay_date = row["交易时间"].date()
-            # 交易时间
-            pay_time = row["交易时间"].time()
-
-            # 过账1的账本
-            posting1_account = ""
-            # 过账1的金额
-            posting1_account_amount = row["金额(元)"]
-            # 过账1的货币
-            posting1_currency = row["货币类型"]
-
-            # 过账2的账本
-            posting2_account = ""
-            # 过账2的金额
-            posting2_account_amount = row["金额(元)"]
-            # 过账2的货币
-            posting2_currency = row["货币类型"]
-
-            # 交易的对手，支出时为收款人，收入时为付款人，为'/'时表示零钱
-            counterparty = row["交易对方"]
-            # 支付的方式，支出时为付款方式，收入时为收款方式，为'/'时表示零钱
-            pay_account = row["支付方式"]
-
-            # 交易的商品
-            product = row["商品"]
-
-            # 交易的备注
-            narration = ""
-
-            # 交易类型
-            trade_type = row["交易类型"]
-
-            # 收入或支出，row["收/支"]，分为收入，支出，'/'表示零钱
-            income_or_expense = row["收/支"]
-
-            flag = "!"
-            postings = []
-
-            if posting1_account_amount <= 0 and posting2_account_amount <= 0:
-                raise ValueError(f"金额字段有异常值{posting1_account_amount}")
-
-            counterparty, pay_account, product = self.clear_data1(
-                counterparty, pay_account, product
-            )
-
-            # TODO 此处row['备注']如果不是'/',可用加到 narration ，加一个变量note ''或 '备注:row['备注']', narration里{note}
-            match income_or_expense:
-                case "支出":
-                    match trade_type:
-                        case "扫二维码付款" | "商户消费" | "转账":
-                            posting1_account_type = AccountType.Assets.value
-                            posting1_account = get_account_by_keyword(pay_account)
-                            posting1_account_amount = -1 * posting1_account_amount
-
-                            posting2_account_type = AccountType.Expenses.value
-                            posting2_account = get_account_by_keyword(counterparty)
-                            posting2_account_amount = posting2_account_amount
-
-                            if (
-                                posting2_account is None
-                                and posting2_account_amount
-                                < self.default_account_max_amount
-                            ):
-                                posting2_account = (
-                                    WeChatPayBillToDataFrame.DEFAULT_ACCOUNT_EXPENSES
-                                )
-                            flag = "*"
-
-                            # 生成过账备注信息
-                            if product != "收款方备注:二维码收款":
-                                narration = f"{trade_type}，从：{pay_account}，给：{counterparty}，购买：{product}"
-                            else:
-                                narration = f"{trade_type}，从：{pay_account}，给：{counterparty}"
-
-                        # 处理微信红包
-                        case wxhb if type(wxhb) is str and wxhb.startswith("微信红包"):
-                            posting1_account_type = AccountType.Assets.value
-                            posting1_account = get_account_by_keyword(pay_account)
-                            posting1_account_amount = -1 * posting1_account_amount
-
-                            posting2_account_type = AccountType.Expenses.value
-                            posting2_account = get_account_by_keyword(counterparty)
-                            posting2_account_amount = posting2_account_amount
-
-                            flag = "*"
-
-                            narration = (
-                                f"微信红包收入,从：{pay_account}，给:{counterparty}"
-                            )
-                        case _:
-                            posting1 = posting2 = ""
-                            raise ValueError(f"支出,未处理的交易类型{trade_type}")
-
-                case "收入":
-                    match trade_type:
-                        # 处理退款
-                        case tk if type(tk) is str and tk.endswith("退款"):
-                            posting1_account_type = AccountType.Assets.value
-                            posting1_account = get_account_by_keyword(pay_account)
-                            posting1_account_amount = posting1_account_amount
-
-                            posting2_account_type = AccountType.Expenses.value
-                            posting2_account = get_account_by_keyword(counterparty)
-                            posting2_account_amount = -1 * posting2_account_amount
-
-                            flag = "*"
-                            narration = (
-                                f"收到退款，从：{counterparty}，退款给:{pay_account},"
-                            )
-                        # 处理转账收入
-                        case "转账" | "其他" | "二维码收款" | "微信红包":
-                            posting1_account_type = AccountType.Assets.value
-                            posting1_account = get_account_by_keyword(pay_account)
-                            posting1_account_amount = posting1_account_amount
-
-                            posting2_account_type = AccountType.Income.value
-                            posting2_account = get_account_by_keyword(counterparty)
-                            posting2_account_amount = -1 * posting2_account_amount
-
-                            if (
-                                posting2_account == None
-                                and posting1_account_amount < 10
-                            ):
-                                posting2_account = (
-                                    WeChatPayBillToDataFrame.DEFAULT_ACCOUNT_INCOME
-                                )
-
-                            flag = "*"
-
-                            narration = f"{trade_type}，从：{counterparty}，给:{pay_account}，商品:{product}"
-                        case _:
-                            postings = []
-                            posting1 = posting2 = ""
-                            raise ValueError(f"收入,未处理的交易类型:{trade_type}")
-
-                case "/":
-                    match trade_type:
-                        case "零钱提现":
-                            posting1_account_type = AccountType.Assets.value
-                            posting1_account = get_account_by_keyword("微信零钱")
-                            posting1_account_amount = -1 * posting1_account_amount
-
-                            posting2_account_type = AccountType.Assets.value
-                            posting2_account = get_account_by_keyword(pay_account)
-                            posting2_account_amount = posting2_account_amount
-
-                            flag = "*"
-                            narration = f"微信零钱提现，给:{pay_account}"
-                        # 处理零钱通转入
-                        case lqt_in if type(lqt_in) is str and lqt_in.startswith(
-                            "转入零钱通"
-                        ):
-                            posting1_account_type = AccountType.Assets.value
-                            posting1_account = get_account_by_keyword("微信零钱通")
-                            posting1_account_amount = posting1_account_amount
-
-                            posting2_account_type = AccountType.Assets.value
-                            posting2_account = get_account_by_keyword(pay_account)
-                            posting2_account_amount = -1 * posting2_account_amount
-
-                            flag = "*"
-                            narration = f"从：{pay_account}，转入给:微信零钱通"
-
-                        # 处理零钱通转出
-                        case lqt_out if type(lqt_out) is str and lqt_out.startswith(
-                            "零钱通转出"
-                        ):
-
-                            posting1_account_type = AccountType.Assets.value
-                            posting1_account = get_account_by_keyword(pay_account)
-                            posting1_account_amount = -1 * posting1_account_amount
-
-                            posting2_account_type = AccountType.Assets.value
-                            posting2_account = get_account_by_keyword(counterparty)
-                            posting2_account_amount = posting2_account_amount
-
-                            flag = "*"
-
-                            narration = f"零钱通转出，给:{counterparty}"
-
-                        case _:
-                            posting1 = posting2 = ""
-                            raise ValueError(f"/ ,未处理的交易类型{trade_type}")
-                case _:
-                    raise ValueError("收/支字段有异常值")
-
-            if posting1_account and posting2_account:
-                if counterparty == "/":
-                    counterparty = "零钱"
-                wx_pay_df_beancount_record = {
-                    "过账交易日期": pay_date,
-                    "过账交易时间": pay_time,
-                    "过账标记": flag,
-                    "交易对手": counterparty,
-                    "过账1的账本类型": posting1_account_type,
-                    "过账1的账本": posting1_account,
-                    "过账1的金额": posting1_account_amount,
-                    "过账1的货币类型": posting1_currency,
-                    "过账2的账本类型": posting2_account_type,
-                    "过账2的账本": posting2_account,
-                    "过账2的金额": posting2_account_amount,
-                    "过账2的货币类型": posting2_currency,
-                    "过账的备注": narration,
-                }
-                wxdf_list.append(pd.DataFrame([wx_pay_df_beancount_record]))
-                self.df.loc[index, "已加入记账本"] = "🆗"
-            else:
-                _row = pd.DataFrame([row])
-                unprocessed_wxdf_list.append(_row)
-
-        wxdf = pd.concat(wxdf_list, ignore_index=True)
-        wxdf = wxdf.reset_index(drop=True)
-
-        unprocessed_wxdf = None
-        if len(unprocessed_wxdf_list) > 0:
-            unprocessed_wxdf = pd.concat(unprocessed_wxdf_list, ignore_index=True)
-
-        self.beancount_df = wxdf
-        self.unprocessed_df = unprocessed_wxdf
-        print("处理完成")
-        return wxdf, unprocessed_wxdf
-
-    def clear_data1(self, counterparty, pay_account, product):
-        """
-        清洗数据,如果是"/"则替换为微信零钱，如果包含"则替换为'
-
-        """
-        if pay_account == "/":
-            pay_account = "微信零钱"
-        if counterparty == "/":
-            counterparty = "微信零钱"
-        if product == "/":
-            product = "微信零钱"
-
-        pay_account = pay_account.replace('"', "'")
-        counterparty = counterparty.replace('"', "'")
-        product = product.replace('"', "'")
-        return counterparty, pay_account, product
-
     # 存储df到json和html文件
     # TODO 直接生成beancount文件
     # TODO 写一个2.6.4的https://beancount.github.io/docs/importing_external_data.html#writing-an-importer
@@ -469,18 +188,6 @@ class WeChatPayBillToDataFrame:
         self.df.to_html(html_path, index=True)
         self.df.to_csv(csv_path, index=True, encoding="utf-8-sig")
 
-        self.beancount_df.to_html(beancount_html_path, index=True)
-        self.beancount_df.to_csv(beancount_csv_path, index=True, encoding="utf-8-sig")
-        if self.unprocessed_df:
-
-            print("由未处理的内容：unprocessed_df is empty.")
-            self.unprocessed_df.to_html(unprocessed_html_path, index=True)
-            self.unprocessed_df.to_csv(
-                unprocessed_csv_path, index=True, encoding="utf-8-sig"
-            )
-        else:
-            print("全部处理OK.unprocessed_df is empty.")
-
     def check_data(self):
         """
 
@@ -493,3 +200,35 @@ class WeChatPayBillToDataFrame:
         else:
             print("未找到金额列，请检查数据。")
             raise ValueError("未找到金额列，请检查数据。")
+    # 定义一个函数，用于识别货币符号并转换金额，未识别的货币符号默认为人民币（CNY）
+
+    def parse_amount_with_currency(x):
+        amount = None
+        currency = "CNY"  # 默认币种设置为人民币
+
+        # 定义一个字典，映射货币符号到货币代码
+        currency_symbols = {
+            "¥": "CNY",  # 人民币
+            "￥": "CNY",  # 人民币
+            "$": "USD",  # 美元
+            "€": "EUR",  # 欧元
+            "£": "GBP",  # 英镑
+            # 可以根据需要添加其他货币符号
+        }
+        # 尝试找到并移除货币符号,记录货币符号
+        for symbol in currency_symbols:
+            if symbol in x:
+                x = x.replace(symbol, "")
+                currency = currency_symbols[symbol]
+                break
+
+        # 移除可能存在的空格和逗号
+        x = x.replace(" ", "").replace(",", "")
+
+        # 尝试将输入字符串转换为浮点数，如果失败则捕获异常
+        try:
+            # 将字符串转换为Decimal类型
+            amount = Decimal(x)  #
+        except InvalidOperation:
+            amount = pd.NA  # 如果转换失败，标记为缺失值
+        return amount, currency  # 示例返回值

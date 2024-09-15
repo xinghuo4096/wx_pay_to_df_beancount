@@ -1,11 +1,17 @@
 {
   "Codegeex.CommitMessageStyle": "Auto",
-  "Codegeex.CompletionDelay": 0.1,
-  "Codegeex.GenerationPreference": "block",
+  "Codegeex.CompletionDelay": 0.5,
+  "Codegeex.GenerationPreference": "automatic",
 
   "todo-tree.general.showActivityBarBadge": true,
   "todo-tree.tree.showCountsInTree": true,
   "todo-tree.general.statusBar": "total",
   "todo-tree.highlights.enabled": false,
-  "todo-tree.filtering.excludeGlobs": [".venv/*"]
+  "todo-tree.filtering.excludeGlobs": [".venv/*"],
+  "Codegeex.CompletionModel": "CodeGeeX Pro[Beta]",
+  "Codegeex.CandidateNum": "1 (fast)",
+  "Codegeex.Chat.LanguagePreference": "中文",
+  "Codegeex.Comment.LanguagePreference": "中文",
+  "Codegeex.SidebarUI.LanguagePreference": "中文",
+  "Codegeex.OnlyKeyControl": false
 }

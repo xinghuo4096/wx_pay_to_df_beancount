@@ -1,46 +1,43 @@
-from DataFrameToBeancount import save_beancount, wechat_pay_to_beancount
-from WeChatPayBillToDataFrame import WeChatPayBillToDataFrame
+from WeChatPayBillToBeancount import WeChatPayBillToBeancount
 
 
 if __name__ == "__main__":
 
-    # AI处理后的文件，目前必须放到secret/data_with_descriptions_and_ledgers.json
+    # AI处理后的文件，
+    # 例如：secret/data_with_descriptions_and_ledgers.json
+    # 或者data_with_descriptions_and_ledgers.json
 
     # 指定CSV文件路径
     # 把指定目录的以'微信'开头的.cvs文件名,合并目录名称后放入列表
+
+    data_with_descriptions_and_ledgers = (
+        "secret/data_with_descriptions_and_ledgers.json"
+    )
     file_path = "secret"
-
-    wx_csv = WeChatPayBillToDataFrame(file_path)
-
-    df = wx_csv.read_wx_pay_to_df()
-    wx_csv.prepare_df_for_beancount()
-
-    wx_csv.check_data()
 
     beancount_path = "secret/wechat_pay_test.beancount"
     beancount_account_path = "secret/wechat_pay_test.account.beancount"
 
-    all_accounts, all_transactions = wechat_pay_to_beancount(wx_csv)
+    json_path = "secret\\wx_pay.json"
+    html_path = "secret\\wx_pay.html"
+    csv_path = "secret\\wx_pay.csv"
+    beancount_html_path = "secret\\wx_pay.beancount.html"
+    beancount_csv_path = "secret\\wx_pay.beancount.csv"
+    unprocessed_html_path = "secret\\wx_pay.unprocessed.html"
+    unprocessed_csv_path = "secret\\wx_pay.unprocessed.csv"
 
-    assert all_accounts, "没有推测出账户account"
-    assert all_transactions, "没有交易过账"
-
-    save_beancount(
-        beancount_path, beancount_account_path, all_transactions, all_accounts
+    wx = WeChatPayBillToBeancount(
+        file_path=file_path,
+        file_data_with_descriptions_and_account=data_with_descriptions_and_ledgers,
+        beancount_path=beancount_path,
+        beancount_account_path=beancount_account_path,
+        json_path=json_path,
+        html_path=html_path,
+        csv_path=csv_path,
+        beancount_html_path=beancount_html_path,
+        beancount_csv_path=beancount_csv_path,
+        unprocessed_html_path=unprocessed_html_path,
+        unprocessed_csv_path=unprocessed_csv_path,
     )
 
-    wx_csv.save_to_file(
-        json_path="secret\\wx_pay.json",
-        html_path="secret\\wx_pay.html",
-        csv_path="secret\\wx_pay.csv",
-        beancount_html_path="secret\\wx_pay.beancount.html",
-        beancount_csv_path="secret\\wx_pay.beancount.csv",
-        unprocessed_html_path="secret\\wx_pay.unprocessed.html",
-        unprocessed_csv_path="secret\\wx_pay.unprocessed.csv",
-    )
-
-    print(wx_csv.beancount_df.head())
-    print(wx_csv.beancount_df.tail())
-
-    assert wx_csv.beancount_df is not None, "beancount_df is None"
-    assert wx_csv.beancount_df.head() is not None, "beancount_df.head() is None"
+    wx.wechat_pay_to_beancount()
